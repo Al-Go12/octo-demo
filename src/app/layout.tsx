@@ -18,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
-      <body className="bg-[#050505] text-slate-300 font-sans selection:bg-[#A8140C] selection:text-white antialiased">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`} suppressHydrationWarning>
+      <body className="bg-[#050505] text-slate-300 font-sans selection:bg-[#A8140C] selection:text-white antialiased relative">
         <SmoothScroll>
           <Navbar />
           {children}

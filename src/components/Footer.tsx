@@ -108,9 +108,12 @@ function CountryOutlines({ radius }: { radius: number }) {
     return (
         <group>
             {lineInstances.map((instance, i) => (
-                <line key={i} geometry={geometry} rotation={instance.rotation as any} scale={instance.scale}>
-                    <lineBasicMaterial color="#38bdf8" transparent opacity={0.3} linewidth={1} />
-                </line>
+                <primitive
+                    key={i}
+                    object={new THREE.Line(geometry, new THREE.LineBasicMaterial({ color: '#38bdf8', transparent: true, opacity: 0.3 }))}
+                    rotation={instance.rotation as any}
+                    scale={instance.scale}
+                />
             ))}
         </group>
     );
