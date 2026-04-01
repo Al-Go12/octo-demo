@@ -51,7 +51,8 @@ export function HeroSection({ isLoaded }: { isLoaded?: boolean }) {
             <div className="absolute inset-0 z-0">
                 <Canvas
                     camera={{ position: [0, 0, 15], fov: 60 }}
-                    gl={{ antialias: false, alpha: false }}
+                    gl={{ antialias: false, alpha: false, powerPreference: 'high-performance' }}
+                    dpr={[1, 1.5]}
                 >
                     <color attach="background" args={['#050505']} />
                     <ambientLight intensity={0.8} />
@@ -113,7 +114,7 @@ export function HeroSection({ isLoaded }: { isLoaded?: boolean }) {
                 transition={{ delay: 2, duration: 1 }}
                 className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 will-change-[opacity]"
             >
-                <span className="text-[10px] text-slate-400 tracking-[0.3em] uppercase font-['var(--font-space-grotesk)']">Scroll</span>
+                <span className="text-[10px] text-slate-400 tracking-[0.3em] uppercase font-['var(--font-space-grotesk)']"></span>
                 <div className="w-[1px] h-12 bg-white/10 relative overflow-hidden">
                     <div ref={dotRef} className="w-[3px] h-3 bg-[#A8140C] shadow-[0_0_10px_#A8140C] absolute left-1/2 -translate-x-1/2 rounded-full will-change-transform" />
                 </div>

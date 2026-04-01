@@ -1,6 +1,6 @@
 'use client';
 import { Mail, MapPin, Phone, ExternalLink } from 'lucide-react';
-import { useRef, useState } from 'react';
+import { useRef, useState, useMemo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { Html, OrbitControls } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
@@ -50,6 +50,72 @@ function Marker({ position, location }: { position: THREE.Vector3; location: typ
     );
 }
 
+function RedLuminousRings({ radius }: { radius: number }) {
+    const rings = useMemo(() => {
+        return Array.from({ length: 15 }).map((_, i) => ({
+            radius: radius * (1.05 + Math.random() * 0.4),
+            rotation: [Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI],
+            opacity: 0.1 + Math.random() * 0.2,
+        }));
+    }, [radius]);
+
+    return (
+        <group>
+            {rings.map((ring, i) => (
+                <mesh key={i} rotation={ring.rotation as any}>
+                    <torusGeometry args={[ring.radius, 0.003, 3, 60]} />
+                    <meshBasicMaterial color="#A8140C" transparent opacity={ring.opacity} blending={THREE.AdditiveBlending} />
+                </mesh>
+            ))}
+        </group>
+    );
+}
+
+function CountryOutlines({ radius }: { radius: number }) {
+    const geometry = useMemo(() => {
+        // Simple country outline visualization for demo purposes.
+        // For accurate outlines, load and process GeoJSON data.
+        const points = [
+            // Example points for a simple shape representing a region
+            new THREE.Vector3(radius, 0, 0),
+            new THREE.Vector3(radius * 0.9, radius * 0.4, 0),
+            new THREE.Vector3(radius * 0.7, radius * 0.7, 0),
+            new THREE.Vector3(radius * 0.4, radius * 0.9, 0),
+            new THREE.Vector3(0, radius, 0),
+            new THREE.Vector3(-radius * 0.4, radius * 0.9, 0),
+            new THREE.Vector3(-radius * 0.7, radius * 0.7, 0),
+            new THREE.Vector3(-radius * 0.9, radius * 0.4, 0),
+            new THREE.Vector3(-radius, 0, 0),
+            new THREE.Vector3(-radius * 0.9, -radius * 0.4, 0),
+            new THREE.Vector3(-radius * 0.7, -radius * 0.7, 0),
+            new THREE.Vector3(-radius * 0.4, -radius * 0.9, 0),
+            new THREE.Vector3(0, -radius, 0),
+            new THREE.Vector3(radius * 0.4, -radius * 0.9, 0),
+            new THREE.Vector3(radius * 0.7, -radius * 0.7, 0),
+            new THREE.Vector3(radius * 0.9, -radius * 0.4, 0),
+            new THREE.Vector3(radius, 0, 0), // Close the loop
+        ];
+        return new THREE.BufferGeometry().setFromPoints(points);
+    }, [radius]);
+
+    const lineInstances = useMemo(() => {
+        return Array.from({ length: 50 }).map(() => ({
+            rotation: [Math.random() * Math.PI, Math.random() * Math.PI, Math.random() * Math.PI],
+            scale: 1 + Math.random() * 0.05,
+        }));
+    }, []);
+
+    return (
+        <group>
+            {lineInstances.map((instance, i) => (
+                <line key={i} geometry={geometry} rotation={instance.rotation as any} scale={instance.scale}>
+                    <lineBasicMaterial color="#38bdf8" transparent opacity={0.3} linewidth={1} />
+                </line>
+            ))}
+        </group>
+    );
+}
+
 function ColorfulEarth() {
     const groupRef = useRef<THREE.Group>(null);
     const radius = 2.5;
@@ -77,6 +143,8 @@ function ColorfulEarth() {
                 <sphereGeometry args={[radius * 0.97, 32, 32]} />
                 <meshStandardMaterial color="#020617" roughness={0.9} metalness={0.3} />
             </mesh>
+            <RedLuminousRings radius={radius} />
+            <CountryOutlines radius={radius} />
             {locations.map((loc, i) => (
                 <Marker key={i} position={latLongToVector3(loc.lat, loc.lng, radius)} location={loc} />
             ))}

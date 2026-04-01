@@ -36,12 +36,27 @@
   }
 }
 
+/* ── Lenis smooth scroll foundation ─────────────────────────── */
+html {
+  scroll-behavior: auto !important;
+  /* Let Lenis handle it, not the browser */
+}
+
+html,
+body {
+  height: 100%;
+}
+
 body {
   background-color: #050505;
-  /* Deep Charcoal */
   color: #f8fafc;
   overflow-x: hidden;
+  overflow-y: auto;
+  /* Lenis needs native overflow-y: auto on body */
   font-family: Arial, Helvetica, sans-serif;
+  /* Layer compositing hint — reduces main-thread paint during scroll */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* Racing Border Animation for Bento Cards */

@@ -105,7 +105,7 @@ export function ProductsSection() {
     return (
         <section className="py-24 relative w-full bg-[#050505] overflow-hidden">
             <div className="container mx-auto px-6">
-                <ConstructedHeading label="03 // Ecosystem" line1="Our Arsenal of" highlight="Products" />
+                <ConstructedHeading label="" line1="Our Arsenal of" highlight="Products" />
 
                 {/* ── Bento Grid with staggerChildren Ripple ── */}
                 <motion.div

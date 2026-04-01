@@ -29,13 +29,7 @@ function ConstructedHeading({ inView }: { inView: boolean }) {
     const container = { hidden: {}, visible: { transition: { staggerChildren: 0.1, delayChildren: 0.1 } } };
     return (
         <div className="text-center mb-16">
-            <motion.span
-                initial={{ opacity: 0, y: 8 }}
-                animate={inView ? { opacity: 1, y: 0 } : {}}
-                className="text-[#A8140C] font-['var(--font-jetbrains)'] text-sm tracking-widest uppercase mb-4 block drop-shadow-[0_0_10px_#A8140C]"
-            >
-                02 // Expertise
-            </motion.span>
+
             <div className="overflow-hidden">
                 <motion.h2
                     variants={container}
