@@ -4,6 +4,9 @@ import { Canvas } from '@react-three/fiber';
 import { NeuralNetwork } from './NeuralNetwork';
 import { OrbitControls } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { useEffect, useRef } from 'react';
+// @ts-ignore
+import anime from 'animejs';
 
 const words = ["We", "Make", "Your", "Signals", "Better"];
 
@@ -27,6 +30,21 @@ const childVariants = {
 };
 
 export function HeroSection({ isLoaded }: { isLoaded?: boolean }) {
+    const dotRef = useRef(null);
+
+    useEffect(() => {
+        if (isLoaded && dotRef.current) {
+            anime({
+                targets: dotRef.current,
+                translateY: [0, 36],
+                opacity: [1, 0],
+                easing: 'easeInOutSine',
+                duration: 1500,
+                loop: true
+            });
+        }
+    }, [isLoaded]);
+
     return (
         <section className="relative w-full min-h-screen flex items-center justify-center overflow-hidden bg-transparent">
 
@@ -39,7 +57,7 @@ export function HeroSection({ isLoaded }: { isLoaded?: boolean }) {
                     <ambientLight intensity={0.8} />
                     <NeuralNetwork isLoaded={isLoaded} />
                     <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.2} maxPolarAngle={Math.PI / 1.5} minPolarAngle={Math.PI / 3} />
-                    <EffectComposer disableNormalPass>
+                    <EffectComposer>
                         <Bloom luminanceThreshold={0.2} luminanceSmoothing={0.9} intensity={2.0} mipmapBlur />
                     </EffectComposer>
                 </Canvas>
@@ -89,7 +107,18 @@ export function HeroSection({ isLoaded }: { isLoaded?: boolean }) {
                 </motion.div>
             </div>
 
-            {/* Decorative gradient overlay at bottom to blend with next section */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={isLoaded ? { opacity: 1 } : { opacity: 0 }}
+                transition={{ delay: 2, duration: 1 }}
+                className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 will-change-[opacity]"
+            >
+                <span className="text-[10px] text-slate-400 tracking-[0.3em] uppercase font-['var(--font-space-grotesk)']">Scroll</span>
+                <div className="w-[1px] h-12 bg-white/10 relative overflow-hidden">
+                    <div ref={dotRef} className="w-[3px] h-3 bg-[#A8140C] shadow-[0_0_10px_#A8140C] absolute left-1/2 -translate-x-1/2 rounded-full will-change-transform" />
+                </div>
+            </motion.div>
+
             <div className="absolute bottom-0 w-full h-40 bg-gradient-to-t from-[#050505] to-transparent z-[5] pointer-events-none"></div>
         </section>
     );

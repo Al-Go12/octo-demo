@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
-import { Space_Grotesk, Inter } from 'next/font/google';
+import { Inter, JetBrains_Mono } from 'next/font/google';
 import './globals.css';
-import { SmoothScroll } from '@/components/SmoothScroll';
 import { Navbar } from '@/components/Navbar';
+import { SmoothScroll } from '@/components/SmoothScroll';
 
-const spaceGrotesk = Space_Grotesk({ subsets: ['latin'], variable: '--font-space-grotesk' });
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' });
+const jetbrainsMono = JetBrains_Mono({ subsets: ['latin'], variable: '--font-jetbrains' });
 
 export const metadata: Metadata = {
-  title: 'Octosignals | We Make Your Signals Better',
-  description: 'Empowering Businesses with Innovative Technology Solutions. Octosignals provides strategy, integration, and bespoke product development.',
+  title: 'Octosignals - Cinematic Tech',
+  description: 'We Make Your Signals Better.',
 };
 
 export default function RootLayout({
@@ -18,8 +18,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${spaceGrotesk.variable} ${inter.variable}`}>
-      <body className="font-sans antialiased text-slate-50 min-h-screen bg-[#050505] flex flex-col">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable}`}>
+      <body className="bg-[#050505] text-slate-300 font-sans selection:bg-[#A8140C] selection:text-white antialiased">
         <SmoothScroll>
           <Navbar />
           {children}

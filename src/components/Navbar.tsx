@@ -28,8 +28,8 @@ export function Navbar() {
                 />
 
                 <nav className="hidden md:flex gap-8 items-center">
-                    <a href="#" className="font-['var(--font-space-grotesk)'] text-sm font-semibold text-slate-300 hover:text-white transition-colors">Philosophy</a>
-                    <a href="#" className="font-['var(--font-space-grotesk)'] text-sm font-semibold text-slate-300 hover:text-white transition-colors">Industries</a>
+                    <a href="#" className="font-['var(--font-space-grotesk)'] text-sm font-semibold text-slate-300 hover:text-white transition-colors">Home</a>
+                    <a href="#" className="font-['var(--font-space-grotesk)'] text-sm font-semibold text-slate-300 hover:text-white transition-colors">About Us</a>
                     <a href="#" className="font-['var(--font-space-grotesk)'] text-sm font-semibold text-slate-300 hover:text-white transition-colors">Products</a>
                     <button className="px-6 py-2 rounded-full border border-[#A8140C] text-[#A8140C] font-['var(--font-space-grotesk)'] text-sm font-semibold hover:bg-[#A8140C] hover:text-white transition-all shadow-[0_0_10px_rgba(168,20,12,0)] hover:shadow-[0_0_20px_rgba(168,20,12,0.6)]">
                         Contact
