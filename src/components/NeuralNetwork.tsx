@@ -15,8 +15,9 @@ export function NeuralNetwork({ isLoaded }: { isLoaded?: boolean }) {
     const maxDistance = 3.5;
     const maxLines = 25000;
 
-    const crimsonColor = useMemo(() => new THREE.Color('#FF2A1F'), []);
-    const baseColor = useMemo(() => new THREE.Color('#1e293b'), []);
+    const crimsonColor = useMemo(() => new THREE.Color('#FF3322'), []);
+    // Brighter steel-blue base so the network is clearly visible at rest
+    const baseColor = useMemo(() => new THREE.Color('#4a7fa5'), []);
 
     const [positions, velocities, initialColors, linePositions, lineColors] = useMemo(() => {
         const pos = new Float32Array(count * 3);
@@ -112,19 +113,24 @@ export function NeuralNetwork({ isLoaded }: { isLoaded?: boolean }) {
 
                 const dxMouse = x1 - mouseX;
                 const dyMouse = y1 - mouseY;
-                const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse + (z1 - 8) ** 2);
+                // Use only X/Y mouse for proximity — Z projection kept at a fixed mid-depth
+                const distMouse = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
 
-                const isGlowing = distMouse < 8;
+                // Tighter, more dramatic glow radius = 5 world units
+                const glowRadius = 5;
+                const isGlowing = distMouse < glowRadius;
 
                 if (isGlowing) {
-                    const intensity = 1 - (distMouse / 8);
-                    colors[i * 3] += ((crimsonColor.r * 1.5) * intensity - colors[i * 3]) * 0.15;
-                    colors[i * 3 + 1] += ((crimsonColor.g * 1.5) * intensity - colors[i * 3 + 1]) * 0.15;
-                    colors[i * 3 + 2] += ((crimsonColor.b * 1.5) * intensity - colors[i * 3 + 2]) * 0.15;
+                    const intensity = (1 - distMouse / glowRadius) ** 1.5; // exponential ramp
+                    const lr = 0.25; // lerp speed – snappy response
+                    colors[i * 3] += (crimsonColor.r * 2.0 * intensity - colors[i * 3]) * lr;
+                    colors[i * 3 + 1] += (crimsonColor.g * 2.0 * intensity - colors[i * 3 + 1]) * lr;
+                    colors[i * 3 + 2] += (crimsonColor.b * 2.0 * intensity - colors[i * 3 + 2]) * lr;
                 } else {
-                    colors[i * 3] += (baseColor.r - colors[i * 3]) * 0.05;
-                    colors[i * 3 + 1] += (baseColor.g - colors[i * 3 + 1]) * 0.05;
-                    colors[i * 3 + 2] += (baseColor.b - colors[i * 3 + 2]) * 0.05;
+                    // Gentle drift back to bright base color
+                    colors[i * 3] += (baseColor.r - colors[i * 3]) * 0.06;
+                    colors[i * 3 + 1] += (baseColor.g - colors[i * 3 + 1]) * 0.06;
+                    colors[i * 3 + 2] += (baseColor.b - colors[i * 3 + 2]) * 0.06;
                 }
 
                 for (let j = i + 1; j < count; j++) {
@@ -145,15 +151,16 @@ export function NeuralNetwork({ isLoaded }: { isLoaded?: boolean }) {
                         linePositions[lineIndex * 6 + 4] = y2;
                         linePositions[lineIndex * 6 + 5] = z2;
 
-                        const alpha = 1.0 - (dist / maxDistance);
+                        const alpha = (1.0 - dist / maxDistance) ** 0.8; // softer falloff = more lines visible
+                        const boost = 1.8; // overall brightness multiplier on lines
 
-                        lineColors[lineIndex * 6] = colors[i * 3] * alpha * 1.2;
-                        lineColors[lineIndex * 6 + 1] = colors[i * 3 + 1] * alpha * 1.2;
-                        lineColors[lineIndex * 6 + 2] = colors[i * 3 + 2] * alpha * 1.2;
+                        lineColors[lineIndex * 6] = colors[i * 3] * alpha * boost;
+                        lineColors[lineIndex * 6 + 1] = colors[i * 3 + 1] * alpha * boost;
+                        lineColors[lineIndex * 6 + 2] = colors[i * 3 + 2] * alpha * boost;
 
-                        lineColors[lineIndex * 6 + 3] = colors[j * 3] * alpha * 1.2;
-                        lineColors[lineIndex * 6 + 4] = colors[j * 3 + 1] * alpha * 1.2;
-                        lineColors[lineIndex * 6 + 5] = colors[j * 3 + 2] * alpha * 1.2;
+                        lineColors[lineIndex * 6 + 3] = colors[j * 3] * alpha * boost;
+                        lineColors[lineIndex * 6 + 4] = colors[j * 3 + 1] * alpha * boost;
+                        lineColors[lineIndex * 6 + 5] = colors[j * 3 + 2] * alpha * boost;
 
                         lineIndex++;
                     }
@@ -179,10 +186,10 @@ export function NeuralNetwork({ isLoaded }: { isLoaded?: boolean }) {
                         <primitive attach="attributes-position" object={new THREE.BufferAttribute(positions, 3)} />
                         <primitive attach="attributes-color" object={new THREE.BufferAttribute(initialColors, 3)} />
                     </bufferGeometry>
-                    <pointsMaterial size={0.15} vertexColors transparent opacity={0.7} blending={THREE.AdditiveBlending} />
+                    <pointsMaterial size={0.22} vertexColors transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} />
                 </points>
                 <lineSegments ref={linesRef} geometry={linesGeometry}>
-                    <lineBasicMaterial vertexColors transparent opacity={0.6} blending={THREE.AdditiveBlending} />
+                    <lineBasicMaterial vertexColors transparent opacity={0.85} blending={THREE.AdditiveBlending} depthWrite={false} />
                 </lineSegments>
             </group>
         </group>
